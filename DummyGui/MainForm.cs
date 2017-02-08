@@ -54,13 +54,19 @@ namespace CthulhuGen
 
             foreach (var action in _core.Actions)
             {
+                int numOptions = action.Options.Count();
+
                 GroupBox box = new GroupBox();
+                box.Height = 50;
+                box.Width = 100 * numOptions;
                 box.Text = action.Value.Name;
                 
                 actions_flowLayoutPanel.Controls.Add(box);
+                box.Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Right;
 
                 FlowLayoutPanel panel = new FlowLayoutPanel();
                 box.Controls.Add(panel);
+                panel.Dock = DockStyle.Fill;
 
 
                 foreach (var option in action.Options)
@@ -69,6 +75,7 @@ namespace CthulhuGen
                     {
                         ISelectOption selectOption = option as ISelectOption;
                         Button b = new Button();
+                        b.Width = 90;
                         b.Text = selectOption.Type.ToString();
                         b.Click += (s, e) => selectOption.Select();
                         b.Click += (s, e) => Rebuild();

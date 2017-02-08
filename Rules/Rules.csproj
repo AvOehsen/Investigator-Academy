@@ -34,10 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AbstractActionset.cs" />
+    <Compile Include="Actionsets\AbstractActionset.cs" />
+    <Compile Include="Actionsets\DefaultCharacterCreation.cs" />
     <Compile Include="Actions\AbstractOption.cs" />
     <Compile Include="Actions\RuleAction.cs" />
     <Compile Include="Actions\SelectOption.cs" />

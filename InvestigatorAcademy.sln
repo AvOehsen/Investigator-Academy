@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CthulhuGen", "CthulhuGen\CthulhuGen.csproj", "{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rules", "Rules\Rules.csproj", "{049FBB4E-5D16-4A8C-8405-11B45217B584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyGui", "DummyGui\DummyGui.csproj", "{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Release|Any CPU.Build.0 = Release|Any CPU
 		{049FBB4E-5D16-4A8C-8405-11B45217B584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{049FBB4E-5D16-4A8C-8405-11B45217B584}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{049FBB4E-5D16-4A8C-8405-11B45217B584}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{049FBB4E-5D16-4A8C-8405-11B45217B584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE29C3F3-7F3C-4C40-AEB2-2AC331FF9357}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

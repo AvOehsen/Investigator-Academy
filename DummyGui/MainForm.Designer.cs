@@ -88,7 +88,7 @@
             this.Controls.Add(this.actions_groupBox);
             this.Controls.Add(this.sheet_groupBox);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Investigator Academy - Dummy GUI";
             this.sheet_groupBox.ResumeLayout(false);
             this.actions_groupBox.ResumeLayout(false);
             this.ResumeLayout(false);

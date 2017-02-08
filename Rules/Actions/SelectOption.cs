@@ -25,9 +25,6 @@ namespace Rules.Actions
 
     public class SelectOption<T>  : AbstractOption<T>, ISelectOption where T : AbstractValue
     {
-        
-
-
         public Action<RuleAction<T>> OnSelected;
 
         public SelectOptionType Type { get; internal set; }

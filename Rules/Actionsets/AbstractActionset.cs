@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rules
+namespace Rules.Actionsets
 {
     public abstract class AbstractActionset
     {
         private List<IRuleAction> _actions = new List<IRuleAction>();
         private CharacterItem _currentCharacter;
+
+        public IEnumerable<IRuleAction> Actions { get { return _actions; } }
 
         public AbstractActionset(CharacterItem currentCharacter)
         {
@@ -22,29 +24,28 @@ namespace Rules
 
         public abstract void Run();
 
-        public async void Foo()
-        {
-            AddSelectOption<NumericalValue>("foo", SelectOptionType.Decrease, o => o.Action.TargetValue.Value = 12, true);
-
-            await WaitAll();
-        }
-
         protected void ClearOptions()
         {
             _actions.Clear();
         }
         
-        private void AddSelectOption<T>(string valueName, SelectOptionType type, Action<SelectOption<T>> onSelect, bool done)
+        protected void AddSelectOption<T>(string valueName, SelectOptionType type, Action<SelectOption<T>> onSelect, bool done)
             where T : AbstractValue
         {
             RuleAction<T> action = _actions.FirstOrDefault(a => a.Value.Name == valueName) as RuleAction<T>;
             if (action == null)
             {
                 action = new RuleAction<T>(_currentCharacter.GetValue<T>(valueName));
+                action.Actionset = this;
                 _actions.Add(action);
             }
 
             action.AddSelection(type, done, onSelect);
+        }
+
+        internal void SetDone(IRuleAction action)
+        {
+            _actions.Remove(action);
         }
 
         protected async Task WaitAll()
@@ -55,10 +56,9 @@ namespace Rules
 
         protected async Task WaitAll(params IRuleAction[] actions)
         {
+            while (actions.Any(a => !a.IsDone))
+                await Task.Delay(100);
         }
-
-        protected async Task WaitOne(params IRuleAction[] actions)
-        {
-        }
+        
     }
 }

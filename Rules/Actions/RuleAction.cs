@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rules.Actionsets;
 
 namespace Rules.Actions
 {
@@ -20,7 +21,6 @@ namespace Rules.Actions
         public AbstractValue Value { get { return TargetValue; } }
         public T TargetValue { get; private set; }
         private List<AbstractOption<T>> options = new List<AbstractOption<T>>();
-        public RuleAction<T> Action { get; set; }
 
         public IEnumerable<IOption> Options
         {
@@ -29,6 +29,8 @@ namespace Rules.Actions
                 return options;
             }
         }
+
+        internal AbstractActionset Actionset { get; set; }
 
         public RuleAction(T targetValue)
         {
@@ -39,6 +41,7 @@ namespace Rules.Actions
         public void SetDone()
         {
             IsDone = true;
+            Actionset.SetDone(this);
         }
         
         public SelectOption<T> AddSelection(SelectOptionType type, bool resolvedOnSelect, Action<SelectOption<T>> onSelected)
@@ -46,7 +49,7 @@ namespace Rules.Actions
             var result = new SelectOption<T>();
             result.Action = this;
             result.Type = type;
-            result.OnSelected = (a) => { onSelected(result); if (resolvedOnSelect) IsDone = true; };
+            result.OnSelected = (a) => { onSelected(result); if (resolvedOnSelect) SetDone(); };
 
             options.Add(result);
             return result;
