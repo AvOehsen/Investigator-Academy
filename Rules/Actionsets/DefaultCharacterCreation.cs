@@ -19,9 +19,10 @@ namespace Rules.Actionsets
         {
             await RollAttributes();
             await SetAge();
-            //TODO: calc points
+            await CalculatePoints();
             //TODO: job
-            //TOD: job-skills
+            //TODO: job-skills
+            //TODO: hoby-skills
         }
 
         private async Task RollAttributes()
@@ -57,7 +58,7 @@ namespace Rules.Actionsets
             int age = Character.GetValue<NumericalValue>("Age").Value;
             if(age <= 19)
             {
-                //remove 5pts of ST + GR; BI - 5
+                Character.GetValue<NumericalValue>("Bi").Value -= 5;
                 await DecreaseAttributes(5, "St", "Gr");
 
             }
@@ -68,26 +69,31 @@ namespace Rules.Actionsets
             else if(age <= 49)
             {
                 await MakeCheck(2, "Bi");
+                Character.GetValue<NumericalValue>("Er").Value -= 5;
                 await DecreaseAttributes(5, "St", "Ko", "Ge");
             }
             else if(age <= 59)
             {
                 await MakeCheck(3, "Bi");
+                Character.GetValue<NumericalValue>("Bi").Value -= 10;
                 await DecreaseAttributes(10, "St", "Ko", "Ge");
             }
             else if(age <= 69)
             {
                 await MakeCheck(4, "Bi");
+                Character.GetValue<NumericalValue>("Bi").Value -= 15;
                 await DecreaseAttributes(20, "St", "Ko", "Ge");
             }
             else if(age <= 79)
             {
                 await MakeCheck(4, "Bi");
+                Character.GetValue<NumericalValue>("Bi").Value -= 20;
                 await DecreaseAttributes(40, "St", "Ko", "Ge");
             }
             else
             {
                 await MakeCheck(4, "Bi");
+                Character.GetValue<NumericalValue>("Bi").Value -= 25;
                 await DecreaseAttributes(80, "St", "Ko", "Ge");
             }
         }
@@ -120,6 +126,21 @@ namespace Rules.Actionsets
             }
 
             await WaitAll(AddFreeOption("done", "done", o => { }, enabled: e => Pool.Score == 0));
+        }
+
+        private async Task CalculatePoints()
+        {
+            ClearOptions();
+
+            Character.GetValue<NumericalValue>("San").Value = Character.GetValue<NumericalValue>("Ma").Value;
+            Character.GetValue<NumericalValue>("Mp").Value = (int)Math.Floor(Character.GetValue<NumericalValue>("Ma").Value / 5.0);
+            Character.GetValue<NumericalValue>("Hp").Value = (int)Math.Floor((Character.GetValue<NumericalValue>("Ko").Value + Character.GetValue<NumericalValue>("Gr").Value) / 10.0);
+
+            //TODO: BW, SB, STATUR
+
+            AddValueOption<NumericalValue>("Lp", "Roll", o => o.Value.Value = (Die.RollD6() + Die.RollD6() + Die.RollD6()) * 5, o => o.WasSelected);
+
+            await WaitAll();
         }
     }
 }
