@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rules.Values;
 
 namespace Rules
 {
@@ -18,6 +19,11 @@ namespace Rules
         internal static int RollD10()
         {
             return _random.Next(1, 11);
+        }
+        
+        internal static bool MakeCheck(int value)
+        {
+            return value <= (RollD10() * 10 + RollD10()) % 100;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace Rules
             result.AddValue(KEY_ATTRIBUTES, new NumericalValue("Bi", 40, 90));
 
             result.AddValue(KEY_CHARACTER, new NumericalValue("Age", 15, 89));
+            result.GetValue<NumericalValue>("Age").Value = 18;
             //TODO: job, birthday, gender, name, etc.
 
             result.AddValue(KEY_POINTS, new NumericalValue("Hp", 0, 20));

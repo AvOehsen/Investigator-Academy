@@ -14,9 +14,13 @@ namespace Rules.Actionsets
     {
         private List<IRuleAction> _actions = new List<IRuleAction>();
         private CharacterItem _currentCharacter;
+        protected CharacterItem Character { get { return _currentCharacter; } }
 
         public IEnumerable<IRuleAction> Actions { get { return _actions; } }
-        
+
+        private Pool _pool = new Pool("", 0);
+        public Pool Pool { get { return _pool; } }
+
         public event Action WaitForInput;
 
         //TODO: pool
@@ -31,6 +35,11 @@ namespace Rules.Actionsets
         protected void ClearOptions()
         {
             _actions.Clear();
+        }
+
+        protected void NewPool(string name, int value)
+        {
+            _pool = new Pool(name, value);
         }
 
         protected IRuleAction AddFreeOption(string actionName, string optionName, Action<FreeOption> select, Func<FreeOption, bool> done = null, Func<FreeOption, bool> enabled = null)

@@ -18,6 +18,8 @@ namespace Rules
         private AbstractActionset _currentActionset;
         public IEnumerable<IRuleAction> Actions { get { return _currentActionset.Actions; } }
 
+        public Pool Pool { get { return _currentActionset.Pool; } }
+
         public event Action WaitForInput
         {
             add

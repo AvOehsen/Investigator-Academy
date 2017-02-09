@@ -30,6 +30,7 @@ namespace CthulhuGen
         private void Rebuild()
         {
             RebuildCharacterSheet();
+            RebuildPool();
             RebuildActions();
         }
 
@@ -47,6 +48,11 @@ namespace CthulhuGen
             }
 
             sheet_richTextBox.Text = sb.ToString();
+        }
+
+        private void RebuildPool()
+        {
+            pool_label.Text = string.Format("{0}: {1}", _core.Pool.Name, _core.Pool.Score);
         }
 
         private void RebuildActions()
@@ -75,6 +81,7 @@ namespace CthulhuGen
                     Button b = new Button();
                     b.Width = 90;
                     b.Text = option.Description;
+                    b.Enabled = option.Enabled;
                     b.Click += (s, e) => option.Select();
                     b.Click += (s, e) => Rebuild();
 

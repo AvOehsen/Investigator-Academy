@@ -49,6 +49,7 @@
     <Compile Include="Character\CharacterValue.cs" />
     <Compile Include="Character\CharacterValueMap.cs" />
     <Compile Include="Die.cs" />
+    <Compile Include="Pool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleCore.cs" />
     <Compile Include="Values\AbstractValue.cs" />

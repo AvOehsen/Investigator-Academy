@@ -47,15 +47,79 @@ namespace Rules.Actionsets
         {
             ClearOptions();
 
-            AddValueOption<NumericalValue>("Age", "Increase", o => o.Value.Value++);
-            AddValueOption<NumericalValue>("Age", "Decrease", o => o.Value.Value--);
-            //TODO: add "done / contineu" option
+            AddValueOption<NumericalValue>("Age", "+", o => o.Value.Value++);
+            AddValueOption<NumericalValue>("Age", "-", o => o.Value.Value--);
 
             await WaitAll(AddFreeOption("Done", "done", o => { }, o => o.WasSelected));
 
             ClearOptions();
 
-            //TODO: adjust attributes
+            int age = Character.GetValue<NumericalValue>("Age").Value;
+            if(age <= 19)
+            {
+                //remove 5pts of ST + GR; BI - 5
+                await DecreaseAttributes(5, "St", "Gr");
+
+            }
+            else if(age <= 39)
+            {
+                await MakeCheck(1, "Bi");
+            }
+            else if(age <= 49)
+            {
+                await MakeCheck(2, "Bi");
+                await DecreaseAttributes(5, "St", "Ko", "Ge");
+            }
+            else if(age <= 59)
+            {
+                await MakeCheck(3, "Bi");
+                await DecreaseAttributes(10, "St", "Ko", "Ge");
+            }
+            else if(age <= 69)
+            {
+                await MakeCheck(4, "Bi");
+                await DecreaseAttributes(20, "St", "Ko", "Ge");
+            }
+            else if(age <= 79)
+            {
+                await MakeCheck(4, "Bi");
+                await DecreaseAttributes(40, "St", "Ko", "Ge");
+            }
+            else
+            {
+                await MakeCheck(4, "Bi");
+                await DecreaseAttributes(80, "St", "Ko", "Ge");
+            }
+        }
+
+        private async Task MakeCheck(int num, string attribute)
+        {
+            for (int i = 0; i < num; i++)
+            {
+                AddValueOption<NumericalValue>(attribute, "improve", MakeCheck, o => o.WasSelected);
+                await WaitAll();
+            }
+        }
+
+        private void MakeCheck(ValueOption<NumericalValue> val)
+        {
+            if (Die.MakeCheck(val.Value.Value))
+                val.Value.Value += Die.RollD10();
+        }
+
+        private async Task DecreaseAttributes(int points, params string[] attributes)
+        {
+            ClearOptions();
+            NewPool("decrease_age_attributes", points);
+
+            foreach (var attribute in attributes)
+            {
+                int maxValue = Character.GetValue<NumericalValue>(attribute).Value;
+                AddValueOption<NumericalValue>(attribute, "decrease", o => o.Value.Value -= Pool.Decrease(1));
+                AddValueOption<NumericalValue>(attribute, "increase", o => { if (o.Value.Value < maxValue) o.Value.Value += Pool.Increase(1); });
+            }
+
+            await WaitAll(AddFreeOption("done", "done", o => { }, enabled: e => Pool.Score == 0));
         }
     }
 }
