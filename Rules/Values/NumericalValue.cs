@@ -10,7 +10,13 @@ namespace Rules.Values
     {
         public int Min { get; set; }
         public int Max { get; set; }
-        public int Value { get; set; }
+
+        private int _value;
+        public int Value
+        {
+            get { return _value; }
+            set { _value = Math.Max(Math.Min(value, Max), Min); }
+        }
 
         public NumericalValue(string name, int min, int max) : base(name)
         {

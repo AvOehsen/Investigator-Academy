@@ -37,8 +37,11 @@
     <Compile Include="Actionsets\AbstractActionset.cs" />
     <Compile Include="Actionsets\DefaultCharacterCreation.cs" />
     <Compile Include="Actions\AbstractOption.cs" />
-    <Compile Include="Actions\RuleAction.cs" />
-    <Compile Include="Actions\SelectOption.cs" />
+    <Compile Include="Actions\FreeAction.cs" />
+    <Compile Include="Actions\FreeOption.cs" />
+    <Compile Include="Actions\IRuleAction.cs" />
+    <Compile Include="Actions\ValueAction.cs" />
+    <Compile Include="Actions\ValueOption.cs" />
     <Compile Include="CharacterFactory.cs" />
     <Compile Include="Character\CharacterAbilities.cs" />
     <Compile Include="Character\CharacterAttributes.cs" />

@@ -9,10 +9,28 @@ namespace Rules.Actions
 {
     public interface IOption
     {
+        void Select();
+        string Description { get; }
+        bool Enabled { get; }
+
     }
 
-    public abstract class AbstractOption<T> : IOption where T : AbstractValue
+    public abstract class AbstractOption : IOption
     {
-        public RuleAction<T> Action { get; set; }
+        public abstract string Description { get; }
+        public abstract bool Enabled { get; }
+        public bool WasSelected { get; private set; }
+        protected IRuleAction Action { get; private set; }
+
+        public AbstractOption(IRuleAction action)
+        {
+            Action = action;
+            WasSelected = false;
+        }
+
+        public virtual void Select()
+        {
+            WasSelected = true;
+        }
     }
 }

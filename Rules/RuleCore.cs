@@ -18,6 +18,18 @@ namespace Rules
         private AbstractActionset _currentActionset;
         public IEnumerable<IRuleAction> Actions { get { return _currentActionset.Actions; } }
 
+        public event Action WaitForInput
+        {
+            add
+            {
+                _currentActionset.WaitForInput += value;
+            }
+            remove
+            {
+                _currentActionset.WaitForInput -= value;
+            }
+        }
+
         public void NewCharacter()
         {
             _currentCharacter = CharacterFactory.Create1920HumanCharacter();

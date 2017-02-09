@@ -20,6 +20,7 @@ namespace CthulhuGen
         public MainForm()
         {
             _core.NewCharacter();
+            _core.WaitForInput += Rebuild;
 
             InitializeComponent();
 
@@ -59,7 +60,7 @@ namespace CthulhuGen
                 GroupBox box = new GroupBox();
                 box.Height = 50;
                 box.Width = 100 * numOptions;
-                box.Text = action.Value.Name;
+                box.Text = action.Name;
                 
                 actions_flowLayoutPanel.Controls.Add(box);
                 box.Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Right;
@@ -71,19 +72,20 @@ namespace CthulhuGen
 
                 foreach (var option in action.Options)
                 {
-                    if(option is ISelectOption)
-                    {
-                        ISelectOption selectOption = option as ISelectOption;
-                        Button b = new Button();
-                        b.Width = 90;
-                        b.Text = selectOption.Type.ToString();
-                        b.Click += (s, e) => selectOption.Select();
-                        b.Click += (s, e) => Rebuild();
+                    Button b = new Button();
+                    b.Width = 90;
+                    b.Text = option.Description;
+                    b.Click += (s, e) => option.Select();
+                    b.Click += (s, e) => Rebuild();
 
-                        panel.Controls.Add(b);
-                    }
+                    panel.Controls.Add(b);
                 }
             }
+        }
+
+        private void refresh_button_Click(object sender, EventArgs e)
+        {
+            Rebuild();
         }
     }
 }
