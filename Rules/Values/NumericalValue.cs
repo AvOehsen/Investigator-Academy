@@ -22,6 +22,7 @@ namespace Rules.Values
         {
             Min = min;
             Max = max;
+            Value = min;
         }
 
 

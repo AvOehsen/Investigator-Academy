@@ -1,6 +1,7 @@
 ﻿using Rules.Actions;
 using Rules.Actionsets;
 using Rules.Character;
+using Rules.Skills;
 using Rules.Values;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,10 @@ namespace Rules
 
         public void NewCharacter()
         {
-            _currentCharacter = CharacterFactory.Create1920HumanCharacter();
-            _currentActionset = new DefaultCharacterCreation(_currentCharacter);
+            SkillCollection skills = SkillFactory.Build1920Skills();
+
+            _currentCharacter = CharacterFactory.Create1920HumanCharacter(skills);
+            _currentActionset = new DefaultCharacterCreation(_currentCharacter, JobFactory.Create1920Jobs(skills), skills);
             _currentActionset.Run();
         }
     }

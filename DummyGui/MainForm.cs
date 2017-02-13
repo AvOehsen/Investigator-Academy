@@ -23,7 +23,7 @@ namespace CthulhuGen
             _core.WaitForInput += Rebuild;
 
             InitializeComponent();
-
+            
             Rebuild();
         }
 
@@ -58,20 +58,26 @@ namespace CthulhuGen
         private void RebuildActions()
         {
             actions_flowLayoutPanel.Controls.Clear();
+            actions_flowLayoutPanel.FlowDirection = FlowDirection.TopDown;
+            actions_flowLayoutPanel.WrapContents = false;
+            actions_flowLayoutPanel.AutoScroll = true;
 
             foreach (var action in _core.Actions)
             {
                 int numOptions = action.Options.Count();
 
                 GroupBox box = new GroupBox();
-                box.Height = 50;
-                box.Width = 100 * numOptions;
+                box.Height = 25 + numOptions * 29;
+                box.Width = actions_flowLayoutPanel.Width - 20;
                 box.Text = action.Name;
                 
                 actions_flowLayoutPanel.Controls.Add(box);
-                box.Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Right;
+                //box.Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Right;
 
                 FlowLayoutPanel panel = new FlowLayoutPanel();
+                panel.FlowDirection = FlowDirection.TopDown;
+                //panel.AutoScroll = true;
+                panel.WrapContents = false;
                 box.Controls.Add(panel);
                 panel.Dock = DockStyle.Fill;
 
@@ -79,7 +85,8 @@ namespace CthulhuGen
                 foreach (var option in action.Options)
                 {
                     Button b = new Button();
-                    b.Width = 90;
+                    b.Width = box.Width - 20;
+                    //b.Height = 24;
                     b.Text = option.Description;
                     b.Enabled = option.Enabled;
                     b.Click += (s, e) => option.Select();
@@ -93,6 +100,15 @@ namespace CthulhuGen
         private void refresh_button_Click(object sender, EventArgs e)
         {
             Rebuild();
+        }
+
+        private void pdf_button_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Pdf File(*.pdf)|.pdf";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                PdfAdapter.WriteCharacter(_core.Character, dialog.FileName);
         }
     }
 }

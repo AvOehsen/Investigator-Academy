@@ -11,6 +11,9 @@ namespace Rules.Character
     {
         private CharacterValueMap _values = new CharacterValueMap();
 
+        public string Job { get; set; }
+
+
         public CharacterItem()
         {
         }
@@ -30,7 +33,16 @@ namespace Rules.Character
             return _values[category].Values;
         }
 
-        internal T GetValue<T>(string name) where T : AbstractValue
+        public int GetNumericalValue(string name)
+        {
+            NumericalValue val = GetValue<NumericalValue>(name);
+            if (val == null)
+                return -1;
+            else
+                return val.Value;
+        }
+
+        public T GetValue<T>(string name) where T : AbstractValue
         {
             foreach (var cat in _values.Values)
                 foreach (var item in cat.Values)

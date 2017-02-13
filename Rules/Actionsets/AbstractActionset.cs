@@ -105,6 +105,21 @@ namespace Rules.Actionsets
             while (actions.Any(a => !a.IsDone))
                 await Task.Delay(100);
         }
-        
+
+        protected async Task WaitOne()
+        {
+            WaitForInput?.Invoke();
+
+            while (!_actions.Any(a => a.IsDone))
+                await Task.Delay(100);
+        }
+
+        protected async Task WaitWhile(Func<bool> func)
+        {
+            WaitForInput?.Invoke();
+
+            while (func())
+                await Task.Delay(100);
+        }
     }
 }

@@ -6,13 +6,20 @@ using System.Threading.Tasks;
 using Rules.Character;
 using Rules.Values;
 using Rules.Actions;
+using Rules.Jobs;
+using Rules.Skills;
 
 namespace Rules.Actionsets
 {
     public class DefaultCharacterCreation : AbstractActionset
     {
-        public DefaultCharacterCreation(CharacterItem currentCharacter) : base(currentCharacter)
+        private IEnumerable<JobItem> _jobs;
+        private SkillCollection _skills;
+
+        public DefaultCharacterCreation(CharacterItem currentCharacter, IEnumerable<JobItem> jobs, SkillCollection skills) : base(currentCharacter)
         {
+            _jobs = jobs;
+            _skills = skills;
         }
 
         public override async void Run()
@@ -20,9 +27,8 @@ namespace Rules.Actionsets
             await RollAttributes();
             await SetAge();
             await CalculatePoints();
-            //TODO: job
-            //TODO: job-skills
-            //TODO: hoby-skills
+            await SelectJob();
+            await Hobby();
         }
 
         private async Task RollAttributes()
@@ -138,9 +144,100 @@ namespace Rules.Actionsets
 
             //TODO: BW, SB, STATUR
 
+            //TODO: special skills (muttersprache, ausweichen, etc.)
+
             AddValueOption<NumericalValue>("Lp", "Roll", o => o.Value.Value = (Die.RollD6() + Die.RollD6() + Die.RollD6()) * 5, o => o.WasSelected);
 
             await WaitAll();
+        }
+
+        private async Task SelectJob()
+        {
+            ClearOptions();
+            JobItem selectedJob = null;
+            foreach(var job in _jobs)
+                AddFreeOption("job", job.Name, o => selectedJob = job, o => o.WasSelected);
+
+            await WaitAll();
+
+            ClearOptions();
+            int score = 0;
+            if (selectedJob.AlternativeSkillsources.Count > 0)
+            {
+                NumericalValue altSource = null;
+                foreach (var skillSource in selectedJob.AlternativeSkillsources)
+                    AddValueOption<NumericalValue>(skillSource, "choose", o => altSource = o.Value);
+
+                await WaitWhile(() => altSource == null);
+
+                score = altSource.Value * 2 + Character.GetValue<NumericalValue>("Bi").Value * 2;
+            }
+            else
+                score = Character.GetValue<NumericalValue>("Bi").Value * 4;
+
+            score -= selectedJob.MinFinance;
+            Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(_skills.GetOrCreateSkill("Finanzkraft", selectedJob.MinFinance), selectedJob.MaxFinance));
+            Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(_skills.GetOrCreateSkill("Muttersprache", Character.GetValue<NumericalValue>("Bi").Value), 80));
+            Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(_skills.GetOrCreateSkill("Ausweichen", Character.GetValue<NumericalValue>("Ge").Value / 2), 80));
+            
+            NewPool("job_points", score);
+            ClearOptions();
+
+            List<SkillItem> skills = new List<SkillItem>();
+            skills.Add(_skills.GetSkillByName("Finanzkraft"));
+            skills.AddRange(selectedJob.DefaultSkills);
+            foreach (var selection in selectedJob.SelectableSkills)
+            {
+                for (int i = 0; i < selection.Number; i++)
+                {
+                    ClearOptions();
+                    foreach (var skill in selection.Skills)
+                    {
+                        if (!skills.Contains(skill))
+                            AddFreeOption("Select One", skill.DisplayName, o => skills.Add(skill), o => o.WasSelected);
+                    }
+                    await WaitAll();
+                }
+            }
+
+            ClearOptions();
+            foreach (var skill in skills)
+            {
+                if (Character.GetValue<NumericalValue>(skill.DisplayName) == null)
+                    Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));   //TODO: get actual values from skill-def
+
+                AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => o.Value.Value += Pool.Decrease(1));
+                AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => o.Value.Value -= Pool.Increase(1));
+                
+            }
+
+            await WaitAll(AddFreeOption("done", "done", o => { }, o => o.WasSelected));
+        }
+
+        private async Task Hobby()
+        {
+            ClearOptions();
+            NewPool("Hobby", Character.GetValue<NumericalValue>("In").Value * 2);
+
+            foreach (var skill in _skills)
+            {
+                if (Character.GetValue<SkillValue>(skill.DisplayName) != null)
+                    AddSkillOptions(skill);
+                else
+                    AddFreeOption(skill.DisplayName, "Add", o => AddSkillOptions(skill), o => o.WasSelected);
+            }
+
+            await WaitAll(AddFreeOption("done", "done", o => { }, o => o.WasSelected));
+            ClearOptions();
+        }
+
+        private void AddSkillOptions(SkillItem skill)
+        {
+            if (Character.GetValue<SkillValue>(skill.DisplayName) == null)
+                Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));
+
+            AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => o.Value.Value += Pool.Decrease(1));
+            AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => o.Value.Value -= Pool.Increase(1));
         }
     }
 }
