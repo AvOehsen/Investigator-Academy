@@ -36,11 +36,6 @@ namespace Rules.Jobs
             SelectableSkills.Add(new SkillSelection(num, skills));
         }
 
-        public void AddFreeChoice(int num)
-        {
-            //TODO
-        }
-
         public class SkillSelection
         {
             public readonly int Number;

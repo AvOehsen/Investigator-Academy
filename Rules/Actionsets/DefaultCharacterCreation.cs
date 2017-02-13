@@ -141,12 +141,9 @@ namespace Rules.Actionsets
             Character.GetValue<NumericalValue>("San").Value = Character.GetValue<NumericalValue>("Ma").Value;
             Character.GetValue<NumericalValue>("Mp").Value = (int)Math.Floor(Character.GetValue<NumericalValue>("Ma").Value / 5.0);
             Character.GetValue<NumericalValue>("Hp").Value = (int)Math.Floor((Character.GetValue<NumericalValue>("Ko").Value + Character.GetValue<NumericalValue>("Gr").Value) / 10.0);
-
-            //TODO: BW, SB, STATUR
-
-            //TODO: special skills (muttersprache, ausweichen, etc.)
-
+            
             AddValueOption<NumericalValue>("Lp", "Roll", o => o.Value.Value = (Die.RollD6() + Die.RollD6() + Die.RollD6()) * 5, o => o.WasSelected);
+            //allow addition luck if age < 19
 
             await WaitAll();
         }
@@ -204,7 +201,7 @@ namespace Rules.Actionsets
             foreach (var skill in skills)
             {
                 if (Character.GetValue<NumericalValue>(skill.DisplayName) == null)
-                    Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));   //TODO: get actual values from skill-def
+                    Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));
 
                 AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => o.Value.Value += Pool.Decrease(1));
                 AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => o.Value.Value -= Pool.Increase(1));

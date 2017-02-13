@@ -23,8 +23,6 @@ namespace Rules.Actionsets
 
         public event Action WaitForInput;
 
-        //TODO: pool
-
         public AbstractActionset(CharacterItem currentCharacter)
         {
             _currentCharacter = currentCharacter;
