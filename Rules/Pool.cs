@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rules.Values;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace Rules
         public int Score { get; private set; }
         private int _maxValue;
 
+        private Dictionary<NumericalValue, int> _investedScore = new Dictionary<NumericalValue, int>();
+
         public Pool(string name, int score)
         {
             Name = name;
@@ -19,30 +22,62 @@ namespace Rules
             _maxValue = score;
         }
 
-        public int Decrease(int value = 1)
+        public void Decrease(NumericalValue value, int ammount = 1, bool negative = false)
         {
-            if(Score >= value)
+            if(Score >= ammount)
             {
-                Score -= value;
-                return value;
-            }
-            else
-            {
-                return 0;
+                int newValue = negative ? value.Value -= ammount : value.Value += ammount;
+
+                if (newValue >= value.Min && newValue <= value.Max)
+                {
+                    value.Value = newValue;
+                    Score -= ammount;
+
+                    if (!_investedScore.ContainsKey(value))
+                        _investedScore[value] = 0;
+                    _investedScore[value] += ammount;
+                }
             }
         }
 
-        public int Increase(int value = 1)
+        public void Increase(NumericalValue value, int ammount = 1, bool negative = false)
         {
-            if(Score + value <= _maxValue)
+            if(_investedScore.ContainsKey(value) && _investedScore[value] >= ammount)
             {
-                Score += value;
-                return value;
-            }
-            else
-            {
-                return 0;
+                if (negative)
+                    value.Value += ammount;
+                else
+                    value.Value -= ammount;
+
+                Score += ammount;
+                _investedScore[value] -= ammount;
             }
         }
+
+        //public int Decrease(int value = 1)
+        //{
+        //    if(Score >= value)
+        //    {
+        //        Score -= value;
+        //        return value;
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
+
+        //public int Increase(int value = 1)
+        //{
+        //    if(Score + value <= _maxValue)
+        //    {
+        //        Score += value;
+        //        return value;
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
     }
 }

@@ -126,12 +126,15 @@ namespace Rules.Actionsets
 
             foreach (var attribute in attributes)
             {
-                int maxValue = Character.GetValue<NumericalValue>(attribute).Value;
+                AddValueOption<NumericalValue>(attribute, "decrease", o => Pool.Decrease(o.Value, negative: true));
+                AddValueOption<NumericalValue>(attribute, "increase", o => Pool.Increase(o.Value, negative: true));
+
+                /*int maxValue = Character.GetValue<NumericalValue>(attribute).Value;
                 AddValueOption<NumericalValue>(attribute, "decrease", o => o.Value.Value -= Pool.Decrease(1));
-                AddValueOption<NumericalValue>(attribute, "increase", o => { if (o.Value.Value < maxValue) o.Value.Value += Pool.Increase(1); });
+                AddValueOption<NumericalValue>(attribute, "increase", o => { if (o.Value.Value < maxValue) o.Value.Value += Pool.Increase(1); });*/
             }
 
-            await WaitAll(AddFreeOption("done", "done", o => { }, enabled: e => Pool.Score == 0));
+            await WaitAll(AddFreeOption("done", "done", o => { }, done: e => e.WasSelected, enabled: e => Pool.Score == 0));
         }
 
         private async Task CalculatePoints()
@@ -203,8 +206,8 @@ namespace Rules.Actionsets
                 if (Character.GetValue<NumericalValue>(skill.DisplayName) == null)
                     Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));
 
-                AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => o.Value.Value += Pool.Decrease(1));
-                AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => o.Value.Value -= Pool.Increase(1));
+                AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => Pool.Decrease(o.Value));
+                AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => Pool.Increase(o.Value));
                 
             }
 
@@ -221,7 +224,7 @@ namespace Rules.Actionsets
                 if (Character.GetValue<SkillValue>(skill.DisplayName) != null)
                     AddSkillOptions(skill);
                 else
-                    AddFreeOption(skill.DisplayName, "Add", o => AddSkillOptions(skill), o => o.WasSelected);
+                    AddFreeOption(skill.DisplayName, "activate", o => AddSkillOptions(skill), o => o.WasSelected);
             }
 
             await WaitAll(AddFreeOption("done", "done", o => { }, o => o.WasSelected));
@@ -233,8 +236,8 @@ namespace Rules.Actionsets
             if (Character.GetValue<SkillValue>(skill.DisplayName) == null)
                 Character.AddValue(CharacterFactory.KEY_ABILITIES, new SkillValue(skill, 80));
 
-            AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => o.Value.Value += Pool.Decrease(1));
-            AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => o.Value.Value -= Pool.Increase(1));
+            AddValueOption<NumericalValue>(skill.DisplayName, "increase", o => Pool.Decrease(o.Value));
+            AddValueOption<NumericalValue>(skill.DisplayName, "decrease", o => Pool.Increase(o.Value));
         }
     }
 }
